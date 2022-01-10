@@ -29,11 +29,11 @@ public class CommentaryService {
         return commentarys;
 	}
 	
-	public void deleteCommentary(final Integer id) {
+	public void deleteCommentary(final Integer id, User user) {
 		commentaryRepository.deleteById(id);
 	}
 	
-    public void addCommentary(CommentaryDto commentaryDto) {
+    public void addCommentary(CommentaryDto commentaryDto, User user) {
         Commentary commentary = getCommentaryFromDto(commentaryDto);
         commentaryRepository.save(commentary);
     }

@@ -50,7 +50,7 @@ public class PostService {
     	return postRepository.findById(postId);
     }
     
-    public void addPost(PostDto postDto) {
+    public void addPost(PostDto postDto, User user) {
         Post post = getPostFromDto(postDto);
         postRepository.save(post);
     }
@@ -62,7 +62,7 @@ public class PostService {
         postRepository.save(post);
     }
     
-	public void deletePost(final Integer id) {
+	public void deletePost(final Integer id, User user) {
 		postRepository.deleteById(id);
 	}
 	

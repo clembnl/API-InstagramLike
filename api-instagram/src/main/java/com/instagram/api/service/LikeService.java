@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import com.instagram.api.dto.like.LikeDto;
 import com.instagram.api.model.Like;
 import com.instagram.api.model.Post;
+import com.instagram.api.model.User;
 import com.instagram.api.repository.LikeRepository;
 
 @Service
@@ -27,11 +28,11 @@ public class LikeService {
         return likes;
 	}
 	
-	public void deleteLike(final Integer id) {
+	public void deleteLike(final Integer id, User user) {
 		likeRepository.deleteById(id);
 	}
 	
-    public void addLike(LikeDto likeDto) {
+    public void addLike(LikeDto likeDto, User user) {
         Like like = getLikeFromDto(likeDto);
         likeRepository.save(like);
     }

@@ -25,6 +25,9 @@ public class Token {
     @OneToOne(targetEntity = User.class, fetch = FetchType.EAGER)
     @JoinColumn(nullable = false, name = "user_id")
     private User user;
+    
+    public Token() {
+    }
 
 	public Token(Integer id, String token, User user) {
 		this.id = id;

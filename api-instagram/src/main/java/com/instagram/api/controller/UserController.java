@@ -35,8 +35,7 @@ public class UserController {
     TokenService tokenService;
     
     @GetMapping("/all")
-    public Iterable<User> findAllUser(@RequestParam("token") String token) throws AuthenticationFailException {
-        tokenService.authenticate(token);
+    public Iterable<User> findAllUser() throws AuthenticationFailException {
         return userRepository.findAll();
     }
 

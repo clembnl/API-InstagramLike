@@ -47,8 +47,11 @@ public class CommentaryController {
 	}
 	
 	@PostMapping("/add")
-    public ResponseEntity<ApiResponse> addCom(@RequestBody CommentaryDto commentaryDto) {
-        commentaryService.addCommentary(commentaryDto);
+    public ResponseEntity<ApiResponse> addCom(@RequestBody CommentaryDto commentaryDto,
+    		@RequestParam("token") String token) throws AuthenticationFailException {
+		tokenService.authenticate(token);
+		User user = tokenService.getUser(token);
+		commentaryService.addCommentary(commentaryDto, user);
         return new ResponseEntity<ApiResponse>(new ApiResponse(true, "Commentary has been added"), HttpStatus.CREATED);
     }
 	
@@ -63,8 +66,12 @@ public class CommentaryController {
 	}
 	
 	@DeleteMapping("/{comID}")
-	public void deleteCommentary(@PathVariable("commentaryID") final Integer commentaryID) {
-		commentaryService.deleteCommentary(commentaryID);
+	public ResponseEntity<ApiResponse> deleteCommentary(@PathVariable("commentaryID") final Integer commentaryID,
+			@RequestParam("token") String token) throws AuthenticationFailException,CommentaryNotExistException {
+		tokenService.authenticate(token);
+		User user = tokenService.getUser(token);
+		commentaryService.deleteCommentary(commentaryID, user);
+		return new ResponseEntity<ApiResponse>(new ApiResponse(true, "Commentary has been deleted"), HttpStatus.OK);
 	}
 
 }

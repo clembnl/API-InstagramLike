@@ -29,10 +29,10 @@ import com.instagram.api.service.TokenService;
 public class PostController {
 	
 	@Autowired
-	private PostService postService;
+	PostService postService;
 	
 	@Autowired
-	private TokenService tokenService;
+	TokenService tokenService;
 	
 	@GetMapping("/")
 	public ResponseEntity<List<PostDto>> getPosts() {
@@ -48,8 +48,11 @@ public class PostController {
 	}
 	
     @PostMapping("/add")
-    public ResponseEntity<ApiResponse> addPost(@RequestBody PostDto postDto) {
-        postService.addPost(postDto);
+    public ResponseEntity<ApiResponse> addPost(@RequestBody PostDto postDto,
+    		@RequestParam("token") String token) throws AuthenticationFailException {
+		tokenService.authenticate(token);
+		User user = tokenService.getUser(token);
+        postService.addPost(postDto, user);
         return new ResponseEntity<ApiResponse>(new ApiResponse(true, "Post has been added"), HttpStatus.CREATED);
     }
 
@@ -63,8 +66,12 @@ public class PostController {
 	}
     
 	@DeleteMapping("/{postID}")
-	public void deletePost(@PathVariable("postID") final Integer postID) {
-		postService.deletePost(postID);
+	public ResponseEntity<ApiResponse> deletePost(@PathVariable("postID") final Integer postID,
+			@RequestParam("token") String token) throws AuthenticationFailException,PostNotExistException {
+		tokenService.authenticate(token);
+		User user = tokenService.getUser(token);
+		postService.deletePost(postID, user);
+		return new ResponseEntity<ApiResponse>(new ApiResponse(true, "Post has been deleted"), HttpStatus.OK);
 	}
 
 }
