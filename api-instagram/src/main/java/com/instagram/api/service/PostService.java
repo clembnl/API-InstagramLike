@@ -6,8 +6,8 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
-import com.instagram.api.dto.post.ByteArrayMultipartFile;
 import com.instagram.api.dto.post.PostDto;
 import com.instagram.api.exception.PostNotExistException;
 import com.instagram.api.model.Post;
@@ -54,15 +54,15 @@ public class PostService {
     	return postRepository.findById(postId);
     }
     
-    public void addPost(PostDto postDto, User user) {
-        Post post = getPostFromDto(postDto);
+    public void addPost(PostDto postDto, User user, MultipartFile image) {
+        Post post = getPostFromDto(postDto, image);
         postRepository.save(post);
     }
     
-    public void updatePost(PostDto postDto, User user) {
+    public void updatePost(PostDto postDto, User user, MultipartFile image) {
         Post post = postRepository.findById(postDto.getId()).get();
-        post.setImageName(System.currentTimeMillis() + "_" + postDto.getImage().getOriginalFilename());
-        post.setImageUrl(storageService.uploadFile(postDto.getImage()));
+        post.setImageName(System.currentTimeMillis() + "_" + image.getOriginalFilename());
+        post.setImageUrl(storageService.uploadFile(image));
         post.setDescription(postDto.getDescription());
         postRepository.save(post);
     }
@@ -74,21 +74,16 @@ public class PostService {
 	}
 	
     public PostDto getDtoFromPost(Post post) {
-        //PostDto postDto = new PostDto(post);
     	PostDto postDto = new PostDto();
-    	byte[] data = storageService.downloadFile(post.getImageName());
-    	ByteArrayMultipartFile convertedImage = new ByteArrayMultipartFile(data, post.getImageName());
-    	postDto.setImage(convertedImage);
     	postDto.setImageUrl(post.getImageUrl());
     	postDto.setDescription(post.getDescription());
         return postDto;
     }
 
-    public Post getPostFromDto(PostDto postDto) {
-        //Post post = new Post(postDto);
+    public Post getPostFromDto(PostDto postDto, MultipartFile image) {
     	Post post = new Post();
-    	post.setImageName(System.currentTimeMillis() + "_" + postDto.getImage().getOriginalFilename());
-    	post.setImageUrl(storageService.uploadFile(postDto.getImage()));
+    	post.setImageName(System.currentTimeMillis() + "_" + image.getOriginalFilename());
+    	post.setImageUrl(storageService.uploadFile(image));
     	post.setDescription(postDto.getDescription());
         return post;
     }

@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.instagram.api.dto.post.PostDto;
 import com.instagram.api.exception.AuthenticationFailException;
@@ -49,19 +50,21 @@ public class PostController {
 	
     @PostMapping("/add")
     public ResponseEntity<ApiResponse> addPost(@RequestBody PostDto postDto,
-    		@RequestParam("token") String token) throws AuthenticationFailException {
+    		@RequestParam("token") String token,
+    		@RequestParam("image") MultipartFile image) throws AuthenticationFailException {
 		tokenService.authenticate(token);
 		User user = tokenService.getUser(token);
-        postService.addPost(postDto, user);
+        postService.addPost(postDto, user, image);
         return new ResponseEntity<ApiResponse>(new ApiResponse(true, "Post has been added"), HttpStatus.CREATED);
     }
 
     @PutMapping("/update/{postID}")
     public ResponseEntity<ApiResponse> updatePost(@RequestBody @Valid PostDto postDto,
-            @RequestParam("token") String token) throws AuthenticationFailException,PostNotExistException {
+            @RequestParam("token") String token,
+            MultipartFile image) throws AuthenticationFailException,PostNotExistException {
 		tokenService.authenticate(token);
 		User user = tokenService.getUser(token);
-		postService.updatePost(postDto, user);
+		postService.updatePost(postDto, user, image);
 		return new ResponseEntity<ApiResponse>(new ApiResponse(true, "Post has been updated"), HttpStatus.OK);
 	}
     
