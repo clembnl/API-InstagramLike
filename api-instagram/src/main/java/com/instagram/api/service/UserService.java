@@ -1,9 +1,13 @@
 package com.instagram.api.service;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+
+import javax.xml.bind.DatatypeConverter;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.instagram.api.config.MessageStrings;
@@ -27,9 +31,6 @@ public class UserService {
 	
     @Autowired
     TokenService tokenService;
-    
-    @Autowired
-    PasswordEncoder passwordEncoder;
 
     Logger logger = LoggerFactory.getLogger(UserService.class);
 
@@ -41,7 +42,13 @@ public class UserService {
             throw new CustomException("User already exists");
         }
         // first encrypt the password
-        String encryptedPassword = passwordEncoder.encode(signupDto.getPassword());
+        String encryptedPassword = signupDto.getPassword();
+        try {
+            encryptedPassword = hashPassword(signupDto.getPassword());
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+            logger.error("hashing password failed {}", e.getMessage());
+        }
 
         User user = new User(signupDto.getUsername(), signupDto.getEmail(), encryptedPassword );
 
@@ -67,10 +74,16 @@ public class UserService {
         if(!Helper.notNull(user)){
             throw  new AuthenticationFailException("user not present");
         }
-        // check if password is right
-        if (!user.getPassword().equals(passwordEncoder.encode(signInDto.getPassword()))){
-            // passowrd doesnot match
-            throw  new AuthenticationFailException(MessageStrings.WRONG_PASSWORD);
+        try {
+            // check if password is right
+            if (!user.getPassword().equals(hashPassword(signInDto.getPassword()))){
+                // passowrd doesnot match
+                throw  new AuthenticationFailException(MessageStrings.WRONG_PASSWORD);
+            }
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+            logger.error("hashing password failed {}", e.getMessage());
+            throw new CustomException(e.getMessage());
         }
 
         Token token = tokenService.getToken(user);
@@ -81,6 +94,15 @@ public class UserService {
         }
 
         return new SignInResponseDto ("success", token.getToken());
+    }
+    
+    String hashPassword(String password) throws NoSuchAlgorithmException {
+        MessageDigest md = MessageDigest.getInstance("MD5");
+        md.update(password.getBytes());
+        byte[] digest = md.digest();
+        String myHash = DatatypeConverter
+                .printHexBinary(digest).toUpperCase();
+        return myHash;
     }
 
 }
