@@ -15,7 +15,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.instagram.api.dto.post.PostDto;
+//import com.instagram.api.dto.post.PostDto;
 
 @Entity
 @Table(name = "posts")
@@ -24,6 +24,9 @@ public class Post {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+    
+    @Column(name = "image_name")
+    private String imageName;
     
     @Column(name = "image_url")
     private String imageUrl;
@@ -41,10 +44,12 @@ public class Post {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "post", fetch = FetchType.EAGER)
     private Set<Commentary> commentaries;
 
+    /*
     public Post(PostDto postDto) {
-    	this.imageUrl = postDto.getImageUrl();
+    	//this.imageUrl = postDto.getImageUrl();
     	this.description = postDto.getDescription();
     }
+    */
     
     public Post() {
     }
@@ -55,6 +60,14 @@ public class Post {
 
 	public void setId(Integer id) {
 		this.id = id;
+	}
+	
+	public String getImageName() {
+		return imageName;
+	}
+
+	public void setImageName(String imageName) {
+		this.imageName = imageName;
 	}
 
 	public String getImageUrl() {

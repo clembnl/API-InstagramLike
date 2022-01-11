@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.amazonaws.services.s3.model.S3Object;
 import com.amazonaws.services.s3.model.S3ObjectInputStream;
@@ -29,9 +30,11 @@ public class StorageService {
 	public String uploadFile(MultipartFile file) {
 		File fileObj = convertMultipartFileToFile(file);
 		String fileName = System.currentTimeMillis() + "_" + file.getOriginalFilename();
-		s3Client.putObject(new PutObjectRequest(bucketName, fileName, fileObj));
+		s3Client.putObject(new PutObjectRequest(bucketName, fileName, fileObj).
+								withCannedAcl(CannedAccessControlList.PublicRead));
 		fileObj.delete();
-		return "File uploaded : " + fileName;
+		//return "File uploaded : " + fileName;
+		return s3Client.getUrl(bucketName, fileName).toString();
 	}
 	
 	public byte[] downloadFile(String fileName) {
@@ -39,6 +42,7 @@ public class StorageService {
 		S3ObjectInputStream inputStream = s3Object.getObjectContent();
 		try {
 			byte[] content = IOUtils.toByteArray(inputStream);
+			
 			return content;
 		} catch (IOException e) {
 			// TODO Auto-generated catch block

@@ -14,11 +14,12 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.instagram.api.service.StorageService;
-
+/*
 @RestController
 @RequestMapping("/file")
+*/
 public class StorageController {
-	
+	/*
 	@Autowired
 	private StorageService storageService;
 	
@@ -43,5 +44,5 @@ public class StorageController {
 	public ResponseEntity<String> deleteFile(@PathVariable String fileName) {
 		return new ResponseEntity<>(storageService.deleteFile(fileName), HttpStatus.OK);
 	}
-
+	*/
 }
