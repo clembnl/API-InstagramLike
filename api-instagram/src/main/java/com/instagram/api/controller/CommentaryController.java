@@ -42,8 +42,8 @@ public class CommentaryController {
 	@GetMapping("/{postID}")
 	public ResponseEntity<List<CommentaryDto>> getComsByPost(@PathVariable("postID") Integer postId) {
 		Post post = postService.getPost(postId).get();
-		List<CommentaryDto> commentarys = commentaryService.listCommentarysByPost(post);
-		return new ResponseEntity<List<CommentaryDto>>(commentarys, HttpStatus.OK);
+		List<CommentaryDto> commentaries = commentaryService.listCommentarysByPost(post);
+		return new ResponseEntity<List<CommentaryDto>>(commentaries, HttpStatus.OK);
 	}
 	
 	@PostMapping("/add")
@@ -57,7 +57,8 @@ public class CommentaryController {
 	
     @PutMapping("/update/{comID}")
     public ResponseEntity<ApiResponse> updateCommentary(@RequestBody @Valid CommentaryDto comDto,
-            @RequestParam("token") String token) throws AuthenticationFailException,CommentaryNotExistException {
+            @RequestParam("token") String token,
+            @PathVariable("comID") Integer comId) throws AuthenticationFailException,CommentaryNotExistException {
 		tokenService.authenticate(token);
 		User user = tokenService.getUser(token);
 		Post post = postService.getPostById(comDto.getPostId());
@@ -66,11 +67,11 @@ public class CommentaryController {
 	}
 	
 	@DeleteMapping("/{comID}")
-	public ResponseEntity<ApiResponse> deleteCommentary(@PathVariable("commentaryID") final Integer commentaryID,
+	public ResponseEntity<ApiResponse> deleteCommentary(@PathVariable("comID") final Integer comID,
 			@RequestParam("token") String token) throws AuthenticationFailException,CommentaryNotExistException {
 		tokenService.authenticate(token);
 		User user = tokenService.getUser(token);
-		commentaryService.deleteCommentary(commentaryID, user);
+		commentaryService.deleteCommentary(comID, user);
 		return new ResponseEntity<ApiResponse>(new ApiResponse(true, "Commentary has been deleted"), HttpStatus.OK);
 	}
 

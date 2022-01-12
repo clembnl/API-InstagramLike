@@ -60,6 +60,7 @@ public class PostController {
 
     @PutMapping("/update/{postID}")
     public ResponseEntity<ApiResponse> updatePost(@RequestBody @Valid PostDto postDto,
+    		@PathVariable("postID") Integer postId,
             @RequestParam("token") String token,
             MultipartFile image) throws AuthenticationFailException,PostNotExistException {
 		tokenService.authenticate(token);

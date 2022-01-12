@@ -2,6 +2,7 @@ package com.instagram.api.service;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Optional;
 
 import javax.xml.bind.DatatypeConverter;
 
@@ -33,7 +34,10 @@ public class UserService {
     TokenService tokenService;
 
     Logger logger = LoggerFactory.getLogger(UserService.class);
-
+    
+    public Optional<User> getUserById(Integer userId) {
+    	return userRepository.findById(userId);
+    }
 
     public ResponseDto signUp(SignUpDto signupDto)  throws CustomException {
         // Check to see if the current email address has already been registered.
