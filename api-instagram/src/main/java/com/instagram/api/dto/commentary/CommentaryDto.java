@@ -9,16 +9,19 @@ public class CommentaryDto {
 	private Integer id;
 	private @NotNull String commentary;
 	private @NotNull Integer postId;
+	private @NotNull Integer userId;
 
-	public CommentaryDto(@NotNull String commentary, @NotNull Integer postId) {
+	public CommentaryDto(@NotNull String commentary, @NotNull Integer postId, @NotNull Integer userId) {
 		this.commentary = commentary;
 		this.postId = postId;
+		this.userId = userId;
 	}
 	
 	public CommentaryDto(Commentary com) {
 		this.setId(com.getId());
 		this.setCommentary(com.getCommentary());
 		this.setPostId(com.getPost().getId());
+		this.setUserId(com.getUser().getId());
 	}
 	
 	public Integer getId() {
@@ -43,5 +46,13 @@ public class CommentaryDto {
 
 	public void setPostId(Integer postId) {
 		this.postId = postId;
+	}
+	
+	public Integer getUserId() {
+		return userId;
+	}
+
+	public void setUserId(Integer userId) {
+		this.userId = userId;
 	}
 }

@@ -1,7 +1,6 @@
 package com.instagram.api.service;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,8 +32,8 @@ public class CommentaryService {
 		commentaryRepository.deleteById(id);
 	}
 	
-    public void addCommentary(CommentaryDto commentaryDto, User user) {
-        Commentary commentary = getCommentaryFromDto(commentaryDto);
+    public void addCommentary(CommentaryDto commentaryDto, User user, Post post) {
+        Commentary commentary = getCommentaryFromDto(commentaryDto, user, post);
         commentaryRepository.save(commentary);
     }
     
@@ -49,8 +48,8 @@ public class CommentaryService {
         return commentaryDto;
     }
     
-    public static Commentary getCommentaryFromDto(CommentaryDto commentaryDto) {
-        Commentary commentary = new Commentary(commentaryDto);
+    public static Commentary getCommentaryFromDto(CommentaryDto commentaryDto, User user, Post post) {
+        Commentary commentary = new Commentary(commentaryDto, user, post);
         return commentary;
     }
 

@@ -11,6 +11,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.amazonaws.AmazonServiceException;
+import com.amazonaws.SdkClientException;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.PutObjectRequest;
@@ -27,9 +29,9 @@ public class StorageService {
 	@Autowired
 	private AmazonS3 s3Client;	
 	
-	public String uploadFile(MultipartFile file) {
+	public String uploadFile(MultipartFile file, String fileName) {
 		File fileObj = convertMultipartFileToFile(file);
-		String fileName = System.currentTimeMillis() + "_" + file.getOriginalFilename();
+		//String fileName = System.currentTimeMillis() + "_" + file.getOriginalFilename();
 		s3Client.putObject(new PutObjectRequest(bucketName, fileName, fileObj).
 								withCannedAcl(CannedAccessControlList.PublicRead));
 		fileObj.delete();
@@ -51,7 +53,7 @@ public class StorageService {
 		return null;
 	}
 	
-	public String deleteFile(String fileName) {
+	public String deleteFile(String fileName) throws SdkClientException, AmazonServiceException {
 		s3Client.deleteObject(bucketName, fileName);
 		return fileName + " removed ...";
 	}

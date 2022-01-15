@@ -32,7 +32,9 @@ public class Like {
     public Like() {
     }
     
-    public Like(LikeDto likeDto) {
+    public Like(LikeDto likeDto, User user, Post post) {
+    	this.user = user;
+    	this.post = post;
     }
 
 	public Integer getId() {

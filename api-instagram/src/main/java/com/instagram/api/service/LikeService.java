@@ -32,8 +32,8 @@ public class LikeService {
 		likeRepository.deleteById(id);
 	}
 	
-    public void addLike(LikeDto likeDto, User user) {
-        Like like = getLikeFromDto(likeDto);
+    public void addLike(LikeDto likeDto, User user, Post post) {
+        Like like = getLikeFromDto(likeDto, user, post);
         likeRepository.save(like);
     }
 	
@@ -42,8 +42,8 @@ public class LikeService {
         return likeDto;
     }
     
-    public static Like getLikeFromDto(LikeDto likeDto) {
-        Like like = new Like(likeDto);
+    public static Like getLikeFromDto(LikeDto likeDto, User user, Post post) {
+        Like like = new Like(likeDto, user, post);
         return like;
     }
 

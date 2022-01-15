@@ -51,7 +51,8 @@ public class CommentaryController {
     		@RequestParam("token") String token) throws AuthenticationFailException {
 		tokenService.authenticate(token);
 		User user = tokenService.getUser(token);
-		commentaryService.addCommentary(commentaryDto, user);
+		Post post  = postService.getPostById(commentaryDto.getPostId());
+		commentaryService.addCommentary(commentaryDto, user, post);
         return new ResponseEntity<ApiResponse>(new ApiResponse(true, "Commentary has been added"), HttpStatus.CREATED);
     }
 	

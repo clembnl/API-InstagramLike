@@ -48,7 +48,8 @@ public class LikeController {
     		@RequestParam("token") String token) throws AuthenticationFailException {
 		tokenService.authenticate(token);
 		User user = tokenService.getUser(token);
-        likeService.addLike(likeDto, user);
+		Post post = postService.getPostById(likeDto.getPostId());
+        likeService.addLike(likeDto, user, post);
         return new ResponseEntity<ApiResponse>(new ApiResponse(true, "Like has been added"), HttpStatus.CREATED);
     }
 	

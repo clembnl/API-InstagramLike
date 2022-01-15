@@ -34,8 +34,10 @@ public class Commentary {
     public Commentary() {
     }
     
-    public Commentary(CommentaryDto comDto) {
+    public Commentary(CommentaryDto comDto, User user, Post post) {
     	this.commentary = comDto.getCommentary();
+    	this.user = user;
+    	this.post = post;
     }
 
 	public Integer getId() {

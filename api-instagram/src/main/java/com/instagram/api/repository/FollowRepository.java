@@ -13,10 +13,10 @@ import com.instagram.api.model.User;
 @Repository
 public interface FollowRepository extends CrudRepository<Follow, Integer> {
 	
-	@Query("from Follow where follower=:user")
+	@Query("from Follow where following=:user")
 	List<Follow> getFollowersByUser(@Param("user") User user);
 	
-	@Query("from Follow where following=:user")
+	@Query("from Follow where follower=:user")
 	List<Follow> getFollowingsByUser(@Param("user") User user);
 
 }

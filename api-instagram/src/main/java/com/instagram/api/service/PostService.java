@@ -55,36 +55,39 @@ public class PostService {
     }
     
     public void addPost(PostDto postDto, User user, MultipartFile image) {
-        Post post = getPostFromDto(postDto, image);
+        Post post = getPostFromDto(postDto, user, image);
         postRepository.save(post);
     }
     
     public void updatePost(PostDto postDto, User user, MultipartFile image) {
         Post post = postRepository.findById(postDto.getId()).get();
         post.setImageName(System.currentTimeMillis() + "_" + image.getOriginalFilename());
-        post.setImageUrl(storageService.uploadFile(image));
+        post.setImageUrl(storageService.uploadFile(image, post.getImageName()));
         post.setDescription(postDto.getDescription());
         postRepository.save(post);
     }
     
 	public void deletePost(final Integer id, User user) {
 		Post post = postRepository.findById(id).get();
-		storageService.deleteFile(post.getImageName());
+		//storageService.deleteFile(post.getImageName());
+		System.out.println(storageService.deleteFile(post.getImageName()));
 		postRepository.deleteById(id);
 	}
 	
     public PostDto getDtoFromPost(Post post) {
     	PostDto postDto = new PostDto();
+    	postDto.setId(post.getId());
     	postDto.setImageUrl(post.getImageUrl());
     	postDto.setDescription(post.getDescription());
         return postDto;
     }
 
-    public Post getPostFromDto(PostDto postDto, MultipartFile image) {
+    public Post getPostFromDto(PostDto postDto, User user, MultipartFile image) {
     	Post post = new Post();
     	post.setImageName(System.currentTimeMillis() + "_" + image.getOriginalFilename());
-    	post.setImageUrl(storageService.uploadFile(image));
+    	post.setImageUrl(storageService.uploadFile(image, post.getImageName()));
     	post.setDescription(postDto.getDescription());
+    	post.setUser(user);
         return post;
     }
 
